@@ -33,6 +33,30 @@
             </div>
             <div class="row">
               <div class="mb-3 col-md-6">
+                <label for="Genero" class="form-label">
+                  Genero
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="Genero"
+                  required
+                  autofocus />
+              </div>
+              <div class="mb-3 col-md-6">
+                <label for="Estado" class="form-label">
+                  Estado
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="Estado"
+                  required
+                  autofocus />
+              </div>
+            </div>
+            <div class="row">
+              <div class="mb-3 col-md-6">
                 <label for="name_surname" class="form-label">
                   Nombre
                 </label>
@@ -61,7 +85,7 @@
               <div class="mt-3 col-md-6">
                   <label for="area" class="form-label">Área</label>
                   <select class="form-select" name="selectArea" {% if dataLogin.rol == 2 %} disabled {% endif %}>
-                      <option value="" selected disabled>Seleccionar</option>
+                      <option value="" selected disabled> </option>
                       {% for area in areas %}
                           <option value="{{area.id_area}}">{{area.nombre_area}}</option>
                       {% endfor %}
