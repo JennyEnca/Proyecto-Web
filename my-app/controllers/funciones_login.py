@@ -11,7 +11,7 @@ import re
 from werkzeug.security import generate_password_hash
 
 
-def recibeInsertRegisterUser(cedula, name, surname, id_area, id_rol, pass_user, estado, genero):
+def recibeInsertRegisterUser(cedula, name, surname, id_area, id_rol, pass_user, estado, genero ):
     respuestaValidar = validarDataRegisterLogin(
         cedula, name, surname, pass_user)
 
@@ -24,7 +24,7 @@ def recibeInsertRegisterUser(cedula, name, surname, id_area, id_rol, pass_user, 
                     INSERT INTO usuarios(cedula, nombre_usuario, apellido_usuario, id_area, id_rol, password, estado, genero) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     """
-                    valores = (cedula, name, surname, id_area, id_rol, nueva_password, estado, genero)
+                    valores = (cedula, name, surname, id_area, id_rol, nueva_password, estado, genero )
                     mycursor.execute(sql, valores)
                     conexion_MySQLdb.commit()
                     resultado_insert = mycursor.rowcount
