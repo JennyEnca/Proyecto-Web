@@ -271,3 +271,69 @@ def actualizarArea(area_id, area_name):
     except Exception as e:
         return f'Se produjo un error al actualizar el área: {str(e)}'
     
+# Función para guardar un estudiante en la base de datos
+def guardarEstudiante(cedula, nombre, carrera):
+    try:
+        with connectionBD() as conexion_MYSQLdb:
+            with conexion_MYSQLdb.cursor(dictionary=True) as cursor:
+                sql = "INSERT INTO estudiantes (cedula, nombre_estudiante, carrera) VALUES (%s, %s, %s)"
+                valores = (cedula, nombre, carrera)
+                cursor.execute(sql, valores)
+                conexion_MYSQLdb.commit()
+                return True  # Retorna True si el estudiante fue guardado correctamente
+    except Exception as e:
+        print(f"Error al guardar el estudiante: {e}")
+        return False  # Retorna False si hubo un error al guardar el estudiante
+
+# Función para obtener la lista de estudiantes desde la base de datos
+def lista_estudiantesBD():
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = "SELECT id_estudiantes, cedula, nombre_estudiante, carrera FROM estudiantes"
+                cursor.execute(querySQL)
+                estudiantesBD = cursor.fetchall()  # Devuelve todos los estudiantes
+        return estudiantesBD
+    except Exception as e:
+        print(f"Error en lista_estudiantesBD : {e}")
+        return []  # Retorna una lista vacía si ocurre un error al obtener los estudiantes
+
+# Función para eliminar un estudiante de la base de datos
+def eliminarEstudiante(id_estudiante):
+    try:
+        with connectionBD() as conexion_MYSQLdb:
+            with conexion_MYSQLdb.cursor(dictionary=True) as cursor:
+                sql = "DELETE FROM estudiantes WHERE id_estudiantes = %s"
+                cursor.execute(sql, (id_estudiante,))
+                conexion_MYSQLdb.commit()
+                return cursor.rowcount > 0  # Retorna True si se eliminó el estudiante, False si no
+    except Exception as e:
+        print(f"Error al eliminar el estudiante: {e}")
+        return False  # Retorna False si hubo un error al eliminar el estudiante
+    
+# Función para obtener un estudiante por ID
+def obtener_estudiante_por_id(id_estudiante):
+    try:
+        with connectionBD() as conexion_MYSQLdb:
+            with conexion_MYSQLdb.cursor(dictionary=True) as cursor:
+                sql = "SELECT id_estudiantes, cedula, nombre_estudiante, carrera FROM estudiantes WHERE id_estudiantes = %s"
+                cursor.execute(sql, (id_estudiante,))
+                estudiante = cursor.fetchone()
+        return estudiante
+    except Exception as e:
+        print(f"Error al obtener el estudiante: {e}")
+        return None  # Si no se encuentra, retorna None
+
+# Función para actualizar los datos del estudiante
+def actualizar_estudiante_db(id_estudiante, cedula, nombre, carrera):
+    try:
+        with connectionBD() as conexion_MYSQLdb:
+            with conexion_MYSQLdb.cursor() as cursor:
+                sql = "UPDATE estudiantes SET cedula = %s, nombre_estudiante = %s, carrera = %s WHERE id_estudiantes = %s"
+                cursor.execute(sql, (cedula, nombre, carrera, id_estudiante))
+                conexion_MYSQLdb.commit()
+                return cursor.rowcount > 0  # Retorna True si se actualizó
+    except Exception as e:
+        print(f"Error al actualizar el estudiante: {e}")
+        return False  # Retorna False si hubo un error
+

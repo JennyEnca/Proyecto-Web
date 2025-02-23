@@ -32,9 +32,9 @@ def perfil(id):
 
 
 # Crear cuenta de usuario
-@app.route('/register-user', methods=['GET'])
+@app.route('/register-student', methods=['GET'])
 def cpanelRegisterUser():
-        return render_template(f'{PATH_URL_LOGIN}/auth_register.html',dataLogin = dataLoginSesion(),areas=lista_areasBD(), roles=lista_rolesBD())
+        return render_template(f'{PATH_URL_LOGIN}/auth_register.html',dataLogin = dataLoginSesion())
 
 
 # Recuperar cuenta de usuario

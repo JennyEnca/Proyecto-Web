@@ -1,0 +1,89 @@
+{% extends 'public/base_cpanel.html' %}
+
+{% block title %}Crud - Python 🐍 | Lista de Estudiantes{% endblock %}
+
+{% block body %}
+{% if resp_estudiantesBD %}
+
+<div class="card content_consignaciones" style="border-radius: 0px !important">
+  <section id="respuestaFiltroMes">
+    <h2 class="text-center mt-5 mb-5">
+      Lista de Estudiantes
+      <hr />
+    </h2>
+
+    <p class="btn btn-success" style="margin-left: 10px;">
+      <a href="/registrar-estudiante">
+        <span style="color: white;">Nuevo Estudiante</span>
+      </a>
+    </p>
+
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
+        <thead>
+          <tr style="background-color: #ddd">
+            <th>ID</th>
+            <th>Cédula</th>
+            <th>Nombre</th>
+            <th>Carrera</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for estudiante in resp_estudiantesBD %}
+          <tr>
+            <td>{{ estudiante.id_estudiantes }}</td>
+            <td>{{ estudiante.cedula }}</td>
+            <td>{{ estudiante.nombre_estudiante }}</td>
+            <td>{{ estudiante.carrera }}</td>
+            <td>
+                <!-- Botón para actualizar -->
+                <a href="{{ url_for('actualizar_estudiante', id=estudiante.id_estudiantes) }}" 
+                   class="btn btn-warning btn-sm"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   title="Actualizar datos de {{ estudiante.nombre_estudiante }}">
+                  <i class="bi bi-pencil-square"></i> Actualizar
+                </a>
+
+                <!-- Botón para eliminar -->
+                <a style="color: white;" onclick="eliminarEstudiante('{{ estudiante.id_estudiantes }}');" 
+                   class="btn btn-danger btn-sm" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="top" 
+                   title="Eliminar a {{ estudiante.nombre_estudiante }}">
+                  <i class="bi bi-trash3"></i> Eliminar
+                </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+{% else %}
+<div class="container mt-3 mb-3" style="width: 100% !important">
+  <div class="row justify-content-md-center mb-2">
+    <div class="col-12">
+      <h2 class="text-center">No hay estudiantes 😭</h2>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+<!-- Script Custom -->
+{% block customJS %}
+<script>
+  function eliminarEstudiante(id) {
+    if (confirm("¿Estás seguro que deseas eliminar al Estudiante?")) {
+      let url = `/borrar-estudiante/${id}`;
+      if (url) {
+        window.location.href = url;
+      }
+    }
+  }
+</script>
+{% endblock %}

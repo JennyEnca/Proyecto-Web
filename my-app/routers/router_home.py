@@ -21,6 +21,7 @@ def usuarios():
         return render_template('public/usuarios/lista_usuarios.html',  resp_usuariosBD=lista_usuariosBD(), dataLogin=dataLoginSesion(), areas=lista_areasBD(), roles = lista_rolesBD())
     else:
         return redirect(url_for('inicioCpanel'))
+    
 
 #Ruta especificada para eliminar un usuario
 @app.route('/borrar-usuario/<string:id>', methods=['GET'])
@@ -98,4 +99,88 @@ def updateArea():
             return "Hubo un error al actualizar el área."
 
     return redirect(url_for('lista_areas'))
-    
+ 
+@app.route("/lista-estudiantes", methods=['GET'])
+def lista_estudiantes():
+    if 'conectado' in session:
+        estudiantes = lista_estudiantesBD()  # Función para obtener los estudiantes desde la base de datos
+        dataLogin = session.get('dataLogin')  # O cualquier otro método que uses para obtener los datos del usuario
+        return render_template('public/usuarios/lista_estudiantes.html', resp_estudiantesBD=estudiantes, dataLogin=dataLogin)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+
+# Ruta para procesar el registro de un estudiante
+@app.route("/registrar-estudiante", methods=['GET', 'POST'])
+def registrar_estudiante():
+    if 'conectado' in session:
+        if request.method == 'POST':
+            cedula = request.form['cedula']
+            nombre = request.form['nombre']
+            carrera = request.form['carrera']
+            
+            # Llamamos a la función para guardar al estudiante en la base de datos
+            resp = guardarEstudiante(cedula, nombre, carrera)
+            
+            if resp:
+                flash('Estudiante registrado con éxito', 'success')
+                return redirect(url_for('lista_estudiantes'))
+            else:
+                flash('Hubo un error al registrar el estudiante.', 'error')
+                return redirect(url_for('registrar_estudiante'))
+        return render_template('public/usuarios/registro.html')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+# Ruta para eliminar un estudiante
+@app.route("/borrar-estudiante/<int:id>", methods=['GET'])
+def borrar_estudiante(id):
+    if 'conectado' in session:
+        resp = eliminarEstudiante(id)  # Función para eliminar el estudiante de la base de datos
+        if resp:
+            flash('Estudiante eliminado correctamente', 'success')
+            return redirect(url_for('lista_estudiantes'))
+        else:
+            flash('Error al eliminar el estudiante.', 'error')
+            return redirect(url_for('lista_estudiantes'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+# Ruta para mostrar el formulario de actualización
+@app.route("/actualizar-estudiante/<int:id>", methods=['GET'])
+def actualizar_estudiante(id):
+    if 'conectado' in session:
+        estudiante = obtener_estudiante_por_id(id)  # Obtén el estudiante por ID
+        if estudiante:
+            return render_template('public/usuarios/actualizar_estudiante.html', estudiante=estudiante)
+        else:
+            flash('Estudiante no encontrado.', 'error')
+            return redirect(url_for('lista_estudiantes'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+# Ruta para procesar la actualización del estudiante
+@app.route("/actualizar-estudiante/<int:id>", methods=['POST'])
+def procesar_actualizacion_estudiante(id):
+    if 'conectado' in session:
+        cedula = request.form['cedula']
+        nombre = request.form['nombre']
+        carrera = request.form['carrera']
+        
+        # Llama a la función para actualizar al estudiante
+        resp = actualizar_estudiante_db(id, cedula, nombre, carrera)
+        
+        if resp:
+            flash('Estudiante actualizado con éxito', 'success')
+            return redirect(url_for('lista_estudiantes'))
+        else:
+            flash('Hubo un error al actualizar el estudiante.', 'error')
+            return redirect(url_for('actualizar_estudiante', id=id))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
